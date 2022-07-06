@@ -1,8 +1,8 @@
 {
-  "name": "vuex-persist-plugin",
+  "name": "vuex-persist-plugin-simple",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.ts",
   "scripts": {
     "test": "node ./test/index.ts"
   },
@@ -41,5 +41,9 @@
     "how to persist vuex state"
   ],
   "author": "chenxinlong",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xinlong-chen865/vuex-persist-plugin.git"
+  }
 }

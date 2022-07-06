@@ -6,7 +6,7 @@ export interface IOptions {
     key?: string;
 };
 
-export type IStorageItem<State> = null | State ;
+export type IStorageItem<State> = null | State;
 
 export interface IGetStorage<State> {
     (key: string, storage: Storage): IStorageItem<State>
