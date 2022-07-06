@@ -1,4 +1,4 @@
-import VuexPersistPluginSimple from './persist'
+import VuexPersistPlugin from './persist'
 
 export { IOptions as IPersistOptions } from './description'
-export default VuexPersistPluginSimple
+export default VuexPersistPlugin

@@ -1,5 +1,5 @@
 {
-  "name": "vuex-persist-plugin-simple",
+  "name": "vuex-persist-plugin-ts",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.ts",
