@@ -38,7 +38,20 @@ export default class Persist<State> {
       }
     }
 
+    /**
+     * 把savedStorage注入到vuex subscribe中
+     * 发布订阅
+     */
     subscribe = (store: Store<State>) => (handler: (mutations: MutationPayload, state: State) => void) => store.subscribe(handler)
+
+    /**
+     * 保存
+     */
+     savedStorage: ISavedStorage<State> = (key: string, saveParams: string[], state: State, storage: Storage): void => saveParams.length > 0
+       ? saveParams.length === 1
+         ? this.setStorage(key, this.getState(saveParams[0], state) as any, storage)
+         : this.setStorage(key, this.reducer(saveParams, state) as any, storage)
+       : this.setStorage(key, state, storage)
 
     /**
      * 获取Storage
@@ -73,8 +86,11 @@ export default class Persist<State> {
      * 通过key的路径，找到对象
      */
     getState = (stateKey: string, state: State) => {
-      const res = { [this.reducerStateKey(stateKey)]: this.reducerStateValue(stateKey, state) }
-      return res
+      if (/\./.test(stateKey)) {
+        return this.reducerTreeStateValue(stateKey, state)
+      } else {
+        return { [this.reducerStateKey(stateKey)]: this.reducerStateValue(stateKey, state) }
+      }
     }
 
     /**
@@ -95,20 +111,21 @@ export default class Persist<State> {
      * 获取递归的Value
      */
     reducerStateValue = (stateKey: string, state: any) => {
-      if (/\./.test(stateKey)) {
-        const splitPath = stateKey.split('.')
-        return { [splitPath[1]]: state[splitPath[0]][splitPath[1]] }
-      } else {
-        return state[stateKey]
-      }
+      return state[stateKey]
     }
 
     /**
-     * 保存
+     * 获取多级递归的Value
      */
-    savedStorage: ISavedStorage<State> = (key: string, saveParams: string[], state: State, storage: Storage): void => saveParams.length > 0
-      ? saveParams.length === 1
-        ? this.setStorage(key, this.getState(saveParams[0], state) as any, storage)
-        : this.setStorage(key, this.reducer(saveParams, state) as any, storage)
-      : this.setStorage(key, state, storage)
+    reducerTreeStateValue = (stateKey: string, state: any) => {
+      const splitKey = stateKey.split('.')
+      return this.reducerStateDfs(splitKey, state)
+    }
+
+    reducerStateDfs = (stateKey: string[], state: any) => {
+      if (stateKey.length === 0) return state
+      const key = stateKey[0]
+      const obj = { [key]: this.reducerStateDfs(stateKey.slice(1), state[key]) } as any
+      return obj
+    }
 }
